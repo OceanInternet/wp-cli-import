@@ -4,84 +4,231 @@ namespace Ois\WpCliImport;
 abstract class WpCliImport
 {
 
-    protected $wpCli = 'php wp-cli.phar';
+    protected $wpCli;
+    protected $wpCliArgs;
+    protected $encoding;
 
     protected $post = array(
-        'ID'                    => NULL,
-        'post_content'          => NULL,
-        'post_name'             => NULL,
-        'post_title'            => NULL,
-        'post_status'           => NULL,
-        'post_type'             => NULL,
-        'post_author'           => NULL,
-        'ping_status'           => NULL,
-        'post_parent'           => NULL,
-        'menu_order'            => NULL,
-        'to_ping'               => NULL,
-        'pinged'                => NULL,
-        'post_password'         => NULL,
-        'guid'                  => NULL,
-        'post_content_filtered' => NULL,
-        'post_excerpt'          => NULL,
-        'post_date'             => NULL,
-        'post_date_gmt'         => NULL,
-        'comment_status'        => NULL,
-        'post_category'         => NULL,
-        'tags_input'            => NULL,
-        'tax_input'             => NULL,
-        'page_template'         => NULL
+        'post_content'   => NULL, // The full text of the post.
+        'post_name'      => NULL, // The name (slug) for your post
+        'post_title'     => NULL, // The title of your post.
+        'post_status'    => NULL, // Default 'draft'.
+        'post_type'      => NULL, // Default 'post'.
+        'post_author'    => NULL, // The user ID number of the author. Default is the current user ID.
+        'post_parent'    => NULL, // Sets the parent of the new post, if any. Default 0.
+        'menu_order'     => NULL, // If new post is a page, sets the order in which it should appear in supported menus. Default 0.
+        'post_excerpt'   => NULL, // For all your post excerpt needs.
+        'post_date'      => NULL, // The time post was made.
+        'comment_status' => NULL, // Default is the option 'default_comment_status', or 'closed'.
+        'post_category'  => NULL, // Default empty.
+        'tags_input'     => NULL  // Default empty.
     );
 
-    function setMeta($postId, Array $post)
+    protected $media = array(
+        'file'    => NULL,
+        'title'   => NULL,
+        'caption' => NULL,
+        'alt'     => NULL,
+        'desc'    => NULL
+    );
+
+    /**
+     * @param string $wpCli
+     * @param array  $wpCliArgs
+     * @param string $encoding
+     */
+    public function __construct(
+        $wpCli='wp',
+        Array $wpCliArgs=array(),
+        $encoding='UTF-8'
+    ) {
+
+        $this->wpCli     = $wpCli;
+        $this->wpCliArgs = $wpCliArgs;
+        $this->encoding  = $encoding;
+    }
+
+    /**
+     * @param $oldPostId
+     * @return bool|int|string
+     */
+    public function createPost($oldPostId)
     {
+        $post = $this->extractPost($oldPostId);
 
-        $type = $post['post_type'];
+        if(!is_array($post)) {
+            return;
+        }
 
-        foreach ($post as $field => $value) {
+        $this->clean('post', $post);
+        $post[] = 'porcelain';
 
-            if (strpos($field, "wpcf-$type-") === 0) {
+        $postId = $this->wpCli(array('post', 'create'), $post);
 
-                $name = str_replace('-', ' ', str_replace("wpcf-$type-", '', $field));
+        if($this->isSaved($postId, 'Post')) {
 
-                echo "Setting: $name -> " . print_r($value) . "\n";
+            $this->setPostMedia($postId, $this->extractPostMedia($oldPostId));
+            $this->setPostMeta($postId, $this->extractPostMeta($oldPostId));
+        }
+    }
 
-                $field = escapeshellarg($field);
-                $value = escapeshellarg($value);
+    /**
+     * @param  array $command
+     * @param  array $args
+     *
+     * @return bool|string
+     */
+    protected function wpCli(Array $command, Array $args=array()) {
 
-                exex("{$this->wpCli} post meta set $postId $field $value");
+        $result = FALSE;
+
+        $wpCli   = $this->wpCli;
+        $command = implode(' ', $command);
+        $args    = $this->getWpCliArgs($args);
+
+        $command = "$wpCli $command $args";
+
+        exec($command, $result);
+
+        return (is_array($result)) ? implode(PHP_EOL, $result) : $result;
+    }
+
+    protected function getWpCliArgs(Array $args) {
+
+        $argArray = array();
+
+        foreach($args as $k => $v) {
+
+            if(is_numeric($k)) {
+
+                $k = $v;
+                $v = NULL;
+            }
+
+            if($v) {
+
+                $v = escapeshellarg($v);
+
+                $argArray[] = "--$k=$v";
+
+            } else {
+
+                $argArray[] = "--$k";
             }
         }
+
+        return implode(' ', $argArray);
     }
 
-    function createPost(Array $oldPost)
-    {
-        $createCommand = "{$this->wpCli} post create --porcelain";
+    protected function clean($type, Array &$post) {
 
-        $this->setPostContent($oldPost);
+        // Remove invalid fields
+        $post = array_intersect_key($post, $this->$type);
 
-        $post = array_intersect_key($oldPost, $this->post);
+        // Remove empty fields
+        $post = array_filter($post, function ($value) { return !empty($value); });
 
-        $post['post_content'] = mb_convert_encoding($post['post_content'], 'UTF-8');
+        // Convert to encoding to $this->encoding
+        $post = array_map(array($this, 'encode'), $post);
+    }
 
-        $post = array_map(function ($value) {
+    protected function encode($value) {
 
-            return ($value == 'NULL') ? NULL : (!empty($value)) ? escapeshellarg($value) : NULL;
-        }, $post);
+        return mb_convert_encoding($value, $this->encoding);
+    }
 
-        $post = array_filter($post, function ($v) {
-            return !empty($v);
-        });
+    protected function isSaved($id, $type) {
 
-        foreach ($post as $k => $v) {
-            $createCommand .= " --$k=$v";
+        if(!$id || !is_numeric($id)) {
+
+            echo "Could not save $type: $id\n";
+            return FALSE;
+
+        } else {
+
+            echo "Created $type: $id\n";
+            return TRUE;
         }
-
-        $postId = $createCommand;
-
-        return (!empty($postId) && is_numeric($postId)) ? $postId : FALSE;
     }
 
-    abstract protected function setPostContent(Array &$oldPost);
+    /**
+     * @param int     $postId
+     * @param array   $postMedia
+     * @param boolean $setFeatured
+     */
+    protected function setPostMedia($postId, Array $postMedia, $setFeatured=TRUE)
+    {
+        foreach($postMedia as $media) {
 
-    abstract protected function extractImages(Array $oldPost);
+            $file = escapeshellarg(str_replace(' ', '%20', $media['file']));
+
+            unset($media['file']);
+
+            $this->clean('media', $media);
+
+            $media['post_id'] = $postId;
+
+            if($setFeatured) {
+
+                $media[] = 'featured_image';
+                $setFeatured = FALSE;
+            }
+
+            $media[] = 'porcelain';
+
+            $mediaId = $this->wpCli(array('media', 'import', $file), $media);
+
+            $this->isSaved($mediaId, 'Media');
+        }
+    }
+
+    /**
+     * @param int   $postId
+     * @param array $postMeta
+     */
+    protected function setPostMeta($postId, Array $postMeta) {
+
+        foreach($postMeta as $key => $value) {
+
+            $key   = escapeshellarg($key);
+            $value = escapeshellarg($value);
+
+            echo $this->wpCli(array('post', 'meta', 'add', $postId, $key, $value)) . "\n";
+        }
+    }
+
+    protected function setPostTerms($postId, Array $postTerms) {
+
+        foreach($postTerms as $taxonomy => $term) {
+
+            $taxonomy = escapeshellarg($taxonomy);
+            $term     = escapeshellarg($term);
+
+            echo $this->wpCli(array('post', 'term', 'add', $postId, $taxonomy, $term)) . "\n";
+        }
+    }
+
+    /**
+     * @param  string $oldPostId
+     * @return array  $oldPost
+     */
+    abstract protected function extractPost($oldPostId);
+
+    /**
+     * @param  string $oldPostId
+     * @return array  $oldPostMeta
+     */
+    abstract protected function extractPostMeta($oldPostId);
+
+    /**
+     * @param  string $oldPostId
+     * @return array  $oldPostTerms
+     */
+    abstract protected function extractPostTerms($oldPostId);
+
+    /**
+     * @param  string $oldPostId
+     * @return array  $oldPostMedia
+     */
+    abstract protected function extractPostMedia($oldPostId);
 }
