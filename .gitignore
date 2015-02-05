@@ -1,4 +1,4 @@
-dependencies.php
+connections.php
 wp-cli.yml
 composer.lock
 /vendor/

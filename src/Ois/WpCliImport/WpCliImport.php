@@ -215,6 +215,11 @@ abstract class WpCliImport
         }
     }
 
+    protected function slug($string){
+
+        return preg_replace('/[^A-Za-z0-9-]+/', '-', $string);
+    }
+
     /**
      * @param  string $oldPostId
      * @return array  $oldPost

@@ -9,6 +9,8 @@ class FireflyNews extends FireflyImport {
     protected $slug       = 'article';
     protected $titleField = 'subject';
 
+    protected $categories = array();
+
     /**
      * @param  string $oldPostId
      * @return array  $oldPost
@@ -63,20 +65,22 @@ ORDER BY
 
     protected function getCategoryId($name) {
 
-        $categoryId = NULL;
+        $name = ucwords($name);
+        $slug = $this->slug($name);
 
-        $categories = array(
-            "event"  => 3,
-            "news"   => 4,
-            "update" => 5
-        );
+        if(empty($this->categories[$slug])) {
 
-        if(!empty($categories[$name])) {
+            $categoryId = $this->wpCli(
+                array('term', 'create', 'category', escapeshellarg($name)),
+                array('slug' => $slug, 'porcelain')
+            );
 
-            $categoryId = $categories[$name];
+            $this->isSaved($categoryId, 'Category');
+
+            $this->categories[$slug] = ($categoryId && is_numeric($categoryId)) ? $categoryId : NULL;
         }
 
-        return $categoryId;
+        return $this->categories[$slug];
     }
 
     protected function setPostContent(&$post) {
