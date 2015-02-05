@@ -49,10 +49,17 @@ abstract class WpCliImport
     }
 
     /**
+     * Import all the things...
+     *
+     * @return boolean TRUE on success, FALSE on failure
+     */
+    abstract public function import();
+
+    /**
      * @param $oldPostId
      * @return bool|int|string
      */
-    public function createPost($oldPostId)
+    protected function createPost($oldPostId)
     {
         $post = $this->extractPost($oldPostId);
 
@@ -68,7 +75,7 @@ abstract class WpCliImport
         if($this->isSaved($postId, 'Post')) {
 
             $this->setPostMedia($postId, $this->extractPostMedia($oldPostId));
-            $this->setPostMeta($postId, $this->extractPostMeta($oldPostId));
+            $this->setPostMeta($postId,  $this->extractPostMeta($oldPostId));
         }
     }
 
@@ -141,12 +148,12 @@ abstract class WpCliImport
 
         if(!$id || !is_numeric($id)) {
 
-            echo "Could not save $type: $id\n";
+            echo " -- Could not save $type: $id\n";
             return FALSE;
 
         } else {
 
-            echo "Created $type: $id\n";
+            echo " -- Created $type: $id\n";
             return TRUE;
         }
     }
@@ -193,7 +200,7 @@ abstract class WpCliImport
             $key   = escapeshellarg($key);
             $value = escapeshellarg($value);
 
-            echo $this->wpCli(array('post', 'meta', 'add', $postId, $key, $value)) . "\n";
+            echo ' -- ' . $this->wpCli(array('post', 'meta', 'add', $postId, $key, $value)) . "\n";
         }
     }
 
@@ -204,7 +211,7 @@ abstract class WpCliImport
             $taxonomy = escapeshellarg($taxonomy);
             $term     = escapeshellarg($term);
 
-            echo $this->wpCli(array('post', 'term', 'add', $postId, $taxonomy, $term)) . "\n";
+            echo ' -- ' . $this->wpCli(array('post', 'term', 'add', $postId, $taxonomy, $term)) . "\n";
         }
     }
 

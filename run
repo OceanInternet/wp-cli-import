@@ -1,6 +1,0 @@
-#!/usr/bin/php
-<?php
-require 'vendor/autoload.php';
-require 'dependencies.php';
-
-$dependencies['FireflyPageImporter']->import();

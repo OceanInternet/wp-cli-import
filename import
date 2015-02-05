@@ -1,0 +1,13 @@
+#!/usr/bin/php
+<?php
+require 'vendor/autoload.php';
+require 'dependencies.php';
+
+try {
+
+    $dependencies[$argv[1]]->import();
+
+} catch (\Exception $e) {
+
+    echo print_r($e->getMessage(), TRUE) . "\n";
+}
