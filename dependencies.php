@@ -25,12 +25,20 @@
 
     $dependencies['FireflyVenues'] = function ($c) {
 
-        return new FireflyVenues($c['connection'], $c['FireflyFixtures'], $c['wp-cli']);
+        return new FireflyVenues(
+            $c['connection'],
+            $c['FireflyFixtures'],
+            $c['FireflyClubs'],
+            $c['wp-cli']
+        );
     };
 
     $dependencies['FireflyFixtures'] = function ($c) {
 
-        return new FireflyFixtures($c['connection'], $c['wp-cli']);
+        return new FireflyFixtures(
+            $c['connection'],
+            $c['wp-cli']
+        );
     };
 
     $dependencies['FireflyClubs'] = function ($c) {
