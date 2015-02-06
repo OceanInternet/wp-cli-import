@@ -28,7 +28,7 @@
         public function __construct(
             Connection $connection,
             FireflyNews $FireflyNews,
-//            FireflyBoats $FireflyBoats,
+            FireflyBoats $FireflyBoats,
             $wpCli = 'wp',
             Array $wpCliArgs = array(),
             $encoding = 'UTF-8'
@@ -38,7 +38,7 @@
             parent::__construct($connection, $wpCli, $wpCliArgs, $encoding);
 
             $this->FireflyNews  = $FireflyNews;
-//            $this->FireflyBoats = $FireflyBoats;
+            $this->FireflyBoats = $FireflyBoats;
         }
 
         public function import()
@@ -49,8 +49,8 @@
             $this->FireflyNews->setClubIds($this->postIdMap);
             $this->FireflyNews->import();
 
-//            $this->FireflyBoats->setClubIds($this->postMapId);
-//            $this->FireflyBoats->import();
+            $this->FireflyBoats->setClubIds($this->postMapId);
+            $this->FireflyBoats->import();
         }
 
         /**
@@ -128,7 +128,7 @@
             return $club;
         }
 
-        protected function setVenueIds(Array $venueIds) {
+        public function setVenueIds(Array $venueIds) {
 
             $this->venueIds = $venueIds;
         }
