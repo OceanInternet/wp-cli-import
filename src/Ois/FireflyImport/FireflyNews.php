@@ -94,4 +94,13 @@ ORDER BY
 
         $post['post_content']  = $content;
     }
+
+    protected function extractPostMeta($oldPostId)
+    {
+
+        $sql = "SELECT `news`.`club_id` AS '_wpcf_belongs_sailing-club_id' FROM `news` WHERE `news`.`news_id` = ?;";
+
+        return $this->connection->fetchAssoc($sql, array($oldPostId));
+    }
+
 }

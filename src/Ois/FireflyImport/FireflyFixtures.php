@@ -30,7 +30,6 @@
                     `fixtures`.`start_date`  AS 'post_date',
                     'tribe_events'           AS 'post_type',
                     'publish'                AS 'post_status',
-                    'post'                   AS 'post_type',
                     'closed'                 AS 'comment_status'
                 FROM
                     `fixtures`
