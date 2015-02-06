@@ -15,6 +15,12 @@ abstract class FireflyImport extends WpCliImport
     protected $slug;
     protected $titleField;
 
+    protected $postConditions = array(
+        'include' => 'Y'
+    );
+
+    protected $postIdMap = array();
+
     public function __construct(
         Connection $connection,
         $wpCli = 'wp',
@@ -37,11 +43,18 @@ abstract class FireflyImport extends WpCliImport
 
             if (!empty($post['id'])) {
 
+                $oldPostId = $post['id'];
+
                 echo "\n - Importing {$this->type}: {$post['title']}\n";
 
-                $this->createPost($post['id']);
+                $this->postIdMap[$oldPostId] = $this->createPost($oldPostId);
             }
         }
+    }
+
+    public function getPostId($oldPostId) {
+
+        return (!empty($this->postIdMap[$oldPostId])) ? $this->postIdMap[$oldPostId] : NULL;
     }
 
     /**
@@ -125,16 +138,25 @@ abstract class FireflyImport extends WpCliImport
 
     protected function fetchPostIds($table, $slug, $titleField='title') {
 
+        $conditions = array();
+
+        foreach ($this->postConditions as $field => $value) {
+
+            $conditions[] = "    `$table`.`$field` = '$value'\n";
+        }
+
+        $conditions = implode("AND\n", $conditions);
+
+        $conditions = ($conditions) ? "WHERE\n$conditions" : '';
+
         $sql = $this->connection->prepare("
 SELECT
   `$table`.`{$slug}_id`  AS 'id',
   `$table`.`$titleField` AS 'title'
 FROM
   `$table`
-WHERE
-  `$table`.`include` =  'Y'
+$conditions
 ORDER BY
-  `$table`.`date`              ASC,
   `$table`.`{$slug}_id` ASC;
   ");
         $sql->execute();

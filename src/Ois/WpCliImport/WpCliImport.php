@@ -51,20 +51,20 @@ abstract class WpCliImport
     /**
      * Import all the things...
      *
-     * @return boolean TRUE on success, FALSE on failure
+     * @return array array(oldId => newId)
      */
     abstract public function import();
 
     /**
-     * @param $oldPostId
-     * @return bool|int|string
+     * @param  $oldPostId
+     * @return int $newPostId or FALSE on failure
      */
     protected function createPost($oldPostId)
     {
         $post = $this->extractPost($oldPostId);
 
         if(!is_array($post)) {
-            return;
+            return FALSE;
         }
 
         $this->clean('post', $post);
@@ -76,7 +76,11 @@ abstract class WpCliImport
 
             $this->setPostMedia($postId, $this->extractPostMedia($oldPostId));
             $this->setPostMeta($postId,  $this->extractPostMeta($oldPostId));
+
+            return $postId;
         }
+
+        return FALSE;
     }
 
     /**
