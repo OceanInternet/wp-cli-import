@@ -76,6 +76,7 @@ abstract class WpCliImport
 
             $this->setPostMedia($postId, $this->extractPostMedia($oldPostId));
             $this->setPostMeta($postId,  $this->extractPostMeta($oldPostId));
+            $this->setPostTerms($postId, $this->extractPostTerms($oldPostId));
 
             return $postId;
         }

@@ -54,6 +54,11 @@ abstract class FireflyImport extends WpCliImport
 
     public function getPostId($oldPostId) {
 
+        if(empty($this->postIdMap)) {
+
+            $this->import();
+        }
+
         return (!empty($this->postIdMap[$oldPostId])) ? $this->postIdMap[$oldPostId] : NULL;
     }
 

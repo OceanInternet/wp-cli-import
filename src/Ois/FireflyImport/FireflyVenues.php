@@ -1,24 +1,49 @@
 <?php
-namespace Ois\FireflyImport;
+    namespace Ois\FireflyImport;
 
-class FireflyVenues extends FireflyImport {
+    use Doctrine\DBAL\Connection;
 
-    protected $name       = 'Firefly Clubs (venues)';
-    protected $type       = 'tribe_venue';
-    protected $table      = 'club';
-    protected $slug       = 'club';
-    protected $titleField = 'club';
+    class FireflyVenues extends FireflyImport
+    {
 
-    protected $postConditions = array();
+        protected $FireflyFixtures;
 
-    protected function extractPost($oldPostId) {
+        protected $name       = 'Firefly Clubs (venues)';
+        protected $type       = 'tribe_venue';
+        protected $table      = 'club';
+        protected $slug       = 'club';
+        protected $titleField = 'club';
 
-        return $this->fetchPost($oldPostId);
-    }
+        protected $postConditions = array();
 
-    protected function fetchPost($oldPostId) {
+        public function __construct(Connection $connection, FireflyFixtures $FireflyFixtures, $wpCli = 'wp', Array $wpCliArgs = array(), $encoding = 'UTF-8')
+        {
 
-        $sql = "
+            parent::__construct($connection, $wpCli, $wpCliArgs, $encoding);
+
+            $this->FireflyFixtures = $FireflyFixtures;
+
+        }
+
+        public function import()
+        {
+
+            parent::import();
+
+            $this->FireflyFixtures->setClubIds($this->postIdMap);
+            $this->FireflyFixtures->import();
+        }
+
+        protected function extractPost($oldPostId)
+        {
+
+            return $this->fetchPost($oldPostId);
+        }
+
+        protected function fetchPost($oldPostId)
+        {
+
+            $sql = "
 SELECT
     `{$this->table}`.`{$this->titleField}` AS 'post_title',
     'publish'                              AS 'post_status',
@@ -30,17 +55,18 @@ WHERE
   `{$this->table}`.`{$this->slug}_id` = ?;
               ";
 
-        return $this->connection->fetchAssoc($sql, array($oldPostId));
-    }
+            return $this->connection->fetchAssoc($sql, array($oldPostId));
+        }
 
-    /**
-     * @param  string $oldPostId
-     * @return array  $oldPostMeta
-     */
-    protected function extractPostMeta($oldPostId) {
+        /**
+         * @param  string $oldPostId
+         *
+         * @return array  $oldPostMeta
+         */
+        protected function extractPostMeta($oldPostId)
+        {
 
-        $sql =
-            "
+            $sql = "
             SELECT
             'events-calendar'  AS '_VenueOrigin',
             TRIM(TRAILING ', ' FROM CONCAT(address1, ', ', address2)) AS '_VenueAddress',
@@ -57,8 +83,18 @@ WHERE
             `club`.`club_id` = ?
         ";
 
-        return $this->connection->fetchAssoc($sql, array($oldPostId));
+            return $this->connection->fetchAssoc($sql, array($oldPostId));
+        }
+
+        /**
+         * @param  string $oldPostId
+         *
+         * @return array  $oldPostMedia
+         */
+        protected function extractPostMedia($oldPostId)
+        {
+
+            return array();
+        }
+
     }
-
-
-}
