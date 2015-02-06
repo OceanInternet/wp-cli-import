@@ -11,6 +11,7 @@ class FireflyVenues extends FireflyImport {
 
     protected $postConditions = array();
 
+
     protected function extractPost($oldPostId) {
 
         return $this->fetchPost($oldPostId);
