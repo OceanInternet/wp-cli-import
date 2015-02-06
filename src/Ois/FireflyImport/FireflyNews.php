@@ -11,6 +11,8 @@ class FireflyNews extends FireflyImport {
 
     protected $categories = array();
 
+    protected $clubIds = array();
+
     /**
      * @param  string $oldPostId
      * @return array  $oldPost
@@ -97,10 +99,20 @@ ORDER BY
 
     protected function extractPostMeta($oldPostId)
     {
+        $sql = "SELECT `news`.`club_id` FROM `news` WHERE `news`.`news_id` = ?;";
 
-        $sql = "SELECT `news`.`club_id` AS '_wpcf_belongs_sailing-club_id' FROM `news` WHERE `news`.`news_id` = ?;";
+        $oldCLubId = $this->connection->fetchColumn($sql, array($oldPostId));
 
-        return $this->connection->fetchAssoc($sql, array($oldPostId));
+        $newClubId = (!empty($this->clubIds[$oldCLubId])) ? $this->clubIds[$oldCLubId] : NULL;
+
+        return array(
+            '_wpcf_belongs_sailing-club_id' => $newClubId
+        );
+    }
+
+    public function setClubIds(Array $clubIds) {
+
+        $this->clubIds = $clubIds;
     }
 
 }

@@ -6,7 +6,15 @@
     class FireflyVenues extends FireflyImport
     {
 
+        /**
+         * @var FireflyFixtures
+         */
         protected $FireflyFixtures;
+
+        /**
+         * @var FireflyClubs
+         */
+        protected $FireflyClubs;
 
         protected $name       = 'Firefly Clubs (venues)';
         protected $type       = 'tribe_venue';
@@ -16,12 +24,17 @@
 
         protected $postConditions = array();
 
-        public function __construct(Connection $connection, FireflyFixtures $FireflyFixtures, $wpCli = 'wp', Array $wpCliArgs = array(), $encoding = 'UTF-8')
+        public function __construct(
+            Connection $connection,
+            FireflyFixtures $FireflyFixtures,
+            FireflyClubs    $FireflyClubs,
+            $wpCli = 'wp', Array $wpCliArgs = array(), $encoding = 'UTF-8')
         {
 
             parent::__construct($connection, $wpCli, $wpCliArgs, $encoding);
 
             $this->FireflyFixtures = $FireflyFixtures;
+            $this->FireflyFixtures = $FireflyClubs;
 
         }
 
@@ -30,8 +43,11 @@
 
             parent::import();
 
-            $this->FireflyFixtures->setClubIds($this->postIdMap);
+            $this->FireflyFixtures->setVenueIds($this->postIdMap);
             $this->FireflyFixtures->import();
+
+            $this->FireflyClubs->setVenueIds($this->postMapId);
+            $this->FireflyClubs->import();
         }
 
         protected function extractPost($oldPostId)
@@ -44,16 +60,16 @@
         {
 
             $sql = "
-SELECT
-    `{$this->table}`.`{$this->titleField}` AS 'post_title',
-    'publish'                              AS 'post_status',
-    '{$this->type}'                        AS 'post_type',
-    'closed'                               AS 'comment_status'
-FROM
-  `{$this->table}`
-WHERE
-  `{$this->table}`.`{$this->slug}_id` = ?;
-              ";
+                SELECT
+                    `{$this->table}`.`{$this->titleField}` AS 'post_title',
+                    'publish'                              AS 'post_status',
+                    '{$this->type}'                        AS 'post_type',
+                    'closed'                               AS 'comment_status'
+                FROM
+                  `{$this->table}`
+                WHERE
+                  `{$this->table}`.`{$this->slug}_id` = ?;
+                  ";
 
             return $this->connection->fetchAssoc($sql, array($oldPostId));
         }

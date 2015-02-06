@@ -12,7 +12,7 @@
 
         protected $postConditions = array('show_event' => 'Y');
 
-        protected $clubIds = array();
+        protected $venueIds = array();
 
         protected function extractPost($oldPostId)
         {
@@ -25,6 +25,7 @@
 
             $sql = "
                 SELECT
+                    CONCAT('fixture_', `fixtures`.`fixture_id`)  AS 'post_name',
                     `fixtures`.`event_title` AS 'post_title',
                     `fixtures`.`details`     AS 'post_content',
                     `fixtures`.`start_date`  AS 'post_date',
@@ -67,16 +68,16 @@
 
             $event = $this->connection->fetchAssoc($sql, array($oldPostId));
 
-            $event['_EventVenueID'] = (!empty($this->clubIds[$event['club_id']])) ? $this->clubIds[$event['club_id']] : NULL;
+            $event['_EventVenueID'] = (!empty($this->venueIds[$event['club_id']])) ? $this->venueIds[$event['club_id']] : NULL;
             unset($event['club_id']);
 
             return $event;
         }
 
-        public function setClubIds(Array $venueIds)
+        public function setVenueIds(Array $venueIds)
         {
 
-            $this->clubIds = $venueIds;
+            $this->venueIds = $venueIds;
         }
 
         protected function extractPostTerms($oldPostId)
