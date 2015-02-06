@@ -11,7 +11,6 @@ class FireflyVenues extends FireflyImport {
 
     protected $postConditions = array();
 
-
     protected function extractPost($oldPostId) {
 
         return $this->fetchPost($oldPostId);
@@ -46,8 +45,8 @@ WHERE
             'events-calendar'  AS '_VenueOrigin',
             TRIM(TRAILING ', ' FROM CONCAT(address1, ', ', address2)) AS '_VenueAddress',
             `club`.`city`      AS '_VenueCity',
-            `club`.`country`   AS '_VenueCountry',
-            'United Kingdom'   AS '_VenueProvince',
+            'United Kingdom'   AS '_VenueCountry',
+            `club`.`county`    AS '_VenueProvince',
             `club`.`post_code` AS '_VenueZip',
             1                  AS '_VenueShowMap',
             1                  AS '_VenueShowMapLink',
