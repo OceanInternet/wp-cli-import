@@ -64,7 +64,7 @@ FROM
   `$table`
 $conditions
 ORDER BY
-  `$table`.`{$slug}_id` ASC;
+  `$table`.`{$slug}` ASC;
   ");
             $sql->execute();
 
