@@ -49,7 +49,7 @@
             $this->FireflyNews->setClubIds($this->postIdMap);
             $this->FireflyNews->import();
 
-            $this->FireflyBoats->setClubIds($this->postMapId);
+            $this->FireflyBoats->setClubIds($this->postIdMap);
             $this->FireflyBoats->import();
         }
 

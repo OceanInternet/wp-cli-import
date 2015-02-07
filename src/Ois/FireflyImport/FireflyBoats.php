@@ -43,6 +43,34 @@
 //            $this->FireflyResults->import();
         }
 
+        protected function fetchPostIds($table, $slug, $titleField='title') {
+
+            $conditions = array();
+
+            foreach ($this->postConditions as $field => $value) {
+
+                $conditions[] = "    `$table`.`$field` = '$value'\n";
+            }
+
+            $conditions = implode("AND\n", $conditions);
+
+            $conditions = ($conditions) ? "WHERE\n$conditions" : '';
+
+            $sql = $this->connection->prepare("
+SELECT
+  `$table`.`{$slug}`  AS 'id',
+  `$table`.`$titleField` AS 'title'
+FROM
+  `$table`
+$conditions
+ORDER BY
+  `$table`.`{$slug}_id` ASC;
+  ");
+            $sql->execute();
+
+            return $sql->fetchAll();
+        }
+
         /**
          * @param  string $oldPostId
          * @return array  $oldPost
