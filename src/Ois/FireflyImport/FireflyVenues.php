@@ -43,8 +43,12 @@
 
             //parent::import();
 
+            echo 'running Firefly Venues import';
+
             $this->FireflyFixtures->setVenueIds($this->postIdMap);
             $this->FireflyFixtures->import();
+
+            echo 'debugging line';
 
             $this->FireflyClubs->setVenueIds($this->postIdMap);
             $this->FireflyClubs->import();
