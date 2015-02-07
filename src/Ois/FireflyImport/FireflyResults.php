@@ -108,8 +108,7 @@ class FireflyResults extends FireflyImport {
     {
         $sql = "
                 SELECT
-                    `results`.`event_type` AS 'tribe_events_cat'
-                FROM
+                    `results`.`event_type` AS 'post_tag
                   `results`
                 WHERE
                   `results`.`result_id` = ?
