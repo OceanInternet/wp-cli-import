@@ -99,7 +99,7 @@ ORDER BY
 
     protected function extractPostMeta($oldPostId)
     {
-        $sql = "SELECT `news`.`club_id` FROM `news` WHERE `news`.`news_id` = ?;";
+        $sql = "SELECT `news`.`club_id` FROM `news` WHERE `news`.`article_id` = ?;";
 
         $oldCLubId = $this->connection->fetchColumn($sql, array($oldPostId));
 
