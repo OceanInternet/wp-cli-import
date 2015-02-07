@@ -69,6 +69,7 @@ class FireflyUsers extends FireflyImport
         $user = $this->fetchUser($userId);
 
         $user['user_email'] = (!empty($user['user_email'])) ? $user['user_email'] : "{$user['user_login']}.user@fireflyclass.co.uk";
+        unset($user['user_login']);
 
         $user['display_name'] = (!empty($user['first_name']) || !empty($user['last_name'])) ? trim("{$user['first_name']} {$user['last_name']}") : NULL;
 
