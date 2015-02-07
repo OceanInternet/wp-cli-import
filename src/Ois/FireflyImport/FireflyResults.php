@@ -9,6 +9,8 @@ class FireflyResults extends FireflyImport {
     protected $slug       = 'result';
     protected $titleField = 'event_title';
 
+    protected $postConditions = array();
+
     protected $boatIds  = array();
     protected $clubIds  = array();
     protected $venueIds = array();
