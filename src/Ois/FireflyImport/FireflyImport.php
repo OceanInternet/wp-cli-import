@@ -155,15 +155,15 @@ abstract class FireflyImport extends WpCliImport
         $conditions = ($conditions) ? "WHERE\n$conditions" : '';
 
         $sql = $this->connection->prepare("
-SELECT
-  `$table`.`{$slug}_id`  AS 'id',
-  `$table`.`$titleField` AS 'title'
-FROM
-  `$table`
-$conditions
-ORDER BY
-  `$table`.`{$slug}_id` ASC;
-  ");
+            SELECT
+              `$table`.`{$slug}_id`  AS 'id',
+              `$table`.`$titleField` AS 'title'
+            FROM
+              `$table`
+            $conditions
+            ORDER BY
+              `$table`.`{$slug}_id` ASC;
+              ");
         $sql->execute();
 
         return $sql->fetchAll();
@@ -185,48 +185,48 @@ ORDER BY
     protected function fetchMedia($oldPostId) {
 
         $sql = "
-SELECT
-    `{$this->table}`.`pic_1`,
-    `{$this->table}`.`pic_2`,
-    `{$this->table}`.`pic_3`,
-    `image1`.`title` AS `title1`, `image1`.`description` AS `description1`,
-    `image2`.`title` AS `title2`, `image2`.`description` AS `description2`,
-    `image3`.`title` AS `title3`, `image3`.`description` AS `description3`,
-    CONCAT(
-        'http://fireflysailing.org.uk/images/media/',
-        `image1`.`directory`,
-        '/',
-        `image1`.`filename`
-    ) AS `imageFile1`,
-    CONCAT(
-        'http://fireflysailing.org.uk/images/media/',
-        `image2`.`directory`,
-        '/',
-        `image2`.`filename`
-    ) AS `imageFile2`,
-    CONCAT(
-        'http://fireflysailing.org.uk/images/media/',
-        `image3`.`directory`,
-        '/',
-        `image3`.`filename`
-    ) AS `imageFile3`
-FROM
-        `{$this->table}`
-LEFT JOIN
-  `media` `image1`
-ON
-  `{$this->table}`.`pic_1` = `image1`.`media_id`
-LEFT JOIN
-  `media` `image2`
-ON
-  `{$this->table}`.`pic_2` = `image2`.`media_id`
-LEFT JOIN
-  `media` `image3`
-ON
-  `{$this->table}`.`pic_3` = `image3`.`media_id`
-WHERE
-    `{$this->table}`.`{$this->slug}_id` = ?;
-";
+            SELECT
+                `{$this->table}`.`pic_1`,
+                `{$this->table}`.`pic_2`,
+                `{$this->table}`.`pic_3`,
+                `image1`.`title` AS `title1`, `image1`.`description` AS `description1`,
+                `image2`.`title` AS `title2`, `image2`.`description` AS `description2`,
+                `image3`.`title` AS `title3`, `image3`.`description` AS `description3`,
+                CONCAT(
+                    'http://fireflysailing.org.uk/images/media/',
+                    `image1`.`directory`,
+                    '/',
+                    `image1`.`filename`
+                ) AS `imageFile1`,
+                CONCAT(
+                    'http://fireflysailing.org.uk/images/media/',
+                    `image2`.`directory`,
+                    '/',
+                    `image2`.`filename`
+                ) AS `imageFile2`,
+                CONCAT(
+                    'http://fireflysailing.org.uk/images/media/',
+                    `image3`.`directory`,
+                    '/',
+                    `image3`.`filename`
+                ) AS `imageFile3`
+            FROM
+                    `{$this->table}`
+            LEFT JOIN
+              `media` `image1`
+            ON
+              `{$this->table}`.`pic_1` = `image1`.`media_id`
+            LEFT JOIN
+              `media` `image2`
+            ON
+              `{$this->table}`.`pic_2` = `image2`.`media_id`
+            LEFT JOIN
+              `media` `image3`
+            ON
+              `{$this->table}`.`pic_3` = `image3`.`media_id`
+            WHERE
+                `{$this->table}`.`{$this->slug}_id` = ?;
+            ";
         return $this->connection->fetchAssoc($sql, array($oldPostId));
     }
 

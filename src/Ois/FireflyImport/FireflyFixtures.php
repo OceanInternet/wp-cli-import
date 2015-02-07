@@ -76,7 +76,6 @@
 
         public function setVenueIds(Array $venueIds)
         {
-echo 'setting fixture venue ids';
             $this->venueIds = $venueIds;
         }
 
