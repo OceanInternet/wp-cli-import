@@ -112,7 +112,7 @@ class FireflyResults extends FireflyImport {
                 FROM
                   `results`
                 WHERE
-                  `results`.`event_id` = ?
+                  `results`.`result_id` = ?
             ";
 
         return array_map(array($this, 'slug'), $this->connection->fetchAssoc($sql, array($oldPostId)));
