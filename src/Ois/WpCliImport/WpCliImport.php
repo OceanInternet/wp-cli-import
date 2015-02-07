@@ -207,7 +207,7 @@ abstract class WpCliImport
             $key   = escapeshellarg($key);
             $value = escapeshellarg($value);
 
-            echo ' -- ' . $this->wpCli(array('post', 'meta', 'add', $postId, $key, $value)) . " . $key:$value\n";
+            echo ' -- ' . $this->wpCli(array('post', 'meta', 'add', $postId, $key, $value)) . " $key:$value\n";
         }
     }
 
@@ -220,7 +220,7 @@ abstract class WpCliImport
             $taxonomy = escapeshellarg($taxonomy);
             $term     = escapeshellarg($term);
 
-            echo ' -- ' . $this->wpCli(array('post', 'term', 'add', $postId, $taxonomy, $term)) . " . $taxonomy:$term\n";
+            echo ' -- ' . $this->wpCli(array('post', 'term', 'add', $postId, $taxonomy, $term)) . " $taxonomy:$term\n";
         }
     }
 
