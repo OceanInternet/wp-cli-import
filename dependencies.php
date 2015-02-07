@@ -46,6 +46,6 @@
         return new FireflyClubs(
             $c['connection'],
             $c['FireflyNews'],
-//            $c['FireflyBoats'],
+            $c['FireflyBoats'],
             $c['wp-cli']);
     };
