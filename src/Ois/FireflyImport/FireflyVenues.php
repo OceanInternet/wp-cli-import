@@ -34,7 +34,7 @@
             parent::__construct($connection, $wpCli, $wpCliArgs, $encoding);
 
             $this->FireflyFixtures = $FireflyFixtures;
-            $this->FireflyFixtures = $FireflyClubs;
+            $this->FireflyClubs    = $FireflyClubs;
 
         }
 
