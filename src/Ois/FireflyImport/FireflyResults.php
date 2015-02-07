@@ -109,6 +109,7 @@ class FireflyResults extends FireflyImport {
         $sql = "
                 SELECT
                     `results`.`event_type` AS 'post_tag'
+                FROM
                   `results`
                 WHERE
                   `results`.`result_id` = ?
