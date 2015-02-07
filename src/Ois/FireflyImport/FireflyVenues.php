@@ -41,12 +41,12 @@
         public function import()
         {
 
-            parent::import();
+            //parent::import();
 
             $this->FireflyFixtures->setVenueIds($this->postIdMap);
             $this->FireflyFixtures->import();
 
-            $this->FireflyClubs->setVenueIds($this->postMapId);
+            $this->FireflyClubs->setVenueIds($this->postIdMap);
             $this->FireflyClubs->import();
         }
 
