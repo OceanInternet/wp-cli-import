@@ -200,23 +200,27 @@ abstract class WpCliImport
      */
     protected function setPostMeta($postId, Array $postMeta) {
 
+        $postMeta = array_filter($postMeta);
+
         foreach($postMeta as $key => $value) {
 
             $key   = escapeshellarg($key);
             $value = escapeshellarg($value);
 
-            echo ' -- ' . $this->wpCli(array('post', 'meta', 'add', $postId, $key, $value)) . "\n";
+            echo ' -- ' . $this->wpCli(array('post', 'meta', 'add', $postId, $key, $value)) . " . $key:$value\n";
         }
     }
 
     protected function setPostTerms($postId, Array $postTerms) {
+
+        $postTerms = array_filter($postTerms);
 
         foreach($postTerms as $taxonomy => $term) {
 
             $taxonomy = escapeshellarg($taxonomy);
             $term     = escapeshellarg($term);
 
-            echo ' -- ' . $this->wpCli(array('post', 'term', 'add', $postId, $taxonomy, $term)) . "\n";
+            echo ' -- ' . $this->wpCli(array('post', 'term', 'add', $postId, $taxonomy, $term)) . " . $taxonomy:$term\n";
         }
     }
 

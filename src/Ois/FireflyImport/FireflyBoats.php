@@ -18,11 +18,12 @@
 
         protected $postConditions = array();
 
-        protected $clubIds = array();
+        protected $venueIds = array();
+        protected $clubIds  = array();
 
         public function __construct(
             Connection $connection,
-//            FireflyResults $FireflyResults,
+            FireflyResults $FireflyResults,
             $wpCli = 'wp',
             Array $wpCliArgs = array(),
             $encoding = 'UTF-8'
@@ -31,7 +32,7 @@
 
             parent::__construct($connection, $wpCli, $wpCliArgs, $encoding);
 
-//            $this->FireflyResults  = $FireflyResults;
+            $this->FireflyResults  = $FireflyResults;
         }
 
         public function import()
@@ -39,8 +40,10 @@
 
             parent::import();
 
-//            $this->FireflyResults->setBoatIds($this->postIdMap);
-//            $this->FireflyResults->import();
+            $this->FireflyResults->seVenueIds($this->venueIds);
+            $this->FireflyResults->setClubIds($this->clubIds);
+            $this->FireflyResults->setBoatIds($this->postIdMap);
+            $this->FireflyResults->import();
         }
 
         protected function fetchPostIds($table, $slug, $titleField='title') {
@@ -57,15 +60,15 @@
             $conditions = ($conditions) ? "WHERE\n$conditions" : '';
 
             $sql = $this->connection->prepare("
-SELECT
-  `$table`.`{$slug}`  AS 'id',
-  `$table`.`$titleField` AS 'title'
-FROM
-  `$table`
-$conditions
-ORDER BY
-  `$table`.`{$slug}` ASC;
-  ");
+                SELECT
+                  `$table`.`{$slug}`  AS 'id',
+                  `$table`.`$titleField` AS 'title'
+                FROM
+                  `$table`
+                $conditions
+                ORDER BY
+                  `$table`.`{$slug}` ASC;
+                  ");
             $sql->execute();
 
             return $sql->fetchAll();
@@ -135,10 +138,6 @@ ORDER BY
             return $boat;
         }
 
-        protected function setVenueIds(Array $venueIds) {
-
-            $this->venueIds = $venueIds;
-        }
         protected function extractPostTerms($oldPostId)
         {
             $sql = "
@@ -187,6 +186,11 @@ ORDER BY
             $picture = $this->connection->fetchAssoc($sql, array($oldPostId));
 
             return (!empty($picture)) ? array($picture) : array();
+        }
+
+        public function setVenueIds(Array $venueIds) {
+
+            $this->venueIds = $venueIds;
         }
 
         public function setClubIds(Array $clubIds) {
