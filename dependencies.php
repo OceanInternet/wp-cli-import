@@ -6,6 +6,7 @@
     use \Ois\FireflyImport\FireflyFixtures;
     use \Ois\FireflyImport\FireflyClubs;
     use \Ois\FireflyImport\FireflyBoats;
+    use \Ois\FireflyImport\FireflyResults;
 
     $dependencies['wp-cli'] = 'vendor/wp-cli/wp-cli/bin/wp';
 
@@ -55,7 +56,15 @@
 
         return new FireflyBoats(
             $c['connection'],
-//            $c['FireflyResults'],
+            $c['FireflyResults'],
+            $c['wp-cli']
+        );
+    };
+
+    $dependencies['FireflyResults'] = function ($c) {
+
+        return new FireflyResults(
+            $c['connection'],
             $c['wp-cli']
         );
     };
