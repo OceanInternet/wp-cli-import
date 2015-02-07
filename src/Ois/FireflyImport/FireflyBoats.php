@@ -186,7 +186,7 @@ ORDER BY
 
             $picture = $this->connection->fetchAssoc($sql, array($oldPostId));
 
-            return (!empty($picture)) ? array($picture) : NULL;
+            return (!empty($picture)) ? array($picture) : array();
         }
 
         public function setClubIds(Array $clubIds) {
