@@ -193,19 +193,19 @@ abstract class FireflyImport extends WpCliImport
                 `image2`.`title` AS `title2`, `image2`.`description` AS `description2`,
                 `image3`.`title` AS `title3`, `image3`.`description` AS `description3`,
                 CONCAT(
-                    'http://79.170.40.247/fireflysailing.org.uk/images/media/',
+                    'http://fireflysailing.org.uk/images/media/',
                     `image1`.`directory`,
                     '/',
                     `image1`.`filename`
                 ) AS `imageFile1`,
                 CONCAT(
-                    'http://79.170.40.247/fireflysailing.org.uk/images/media/',
+                    'http://fireflysailing.org.uk/images/media/',
                     `image2`.`directory`,
                     '/',
                     `image2`.`filename`
                 ) AS `imageFile2`,
                 CONCAT(
-                    'http://79.170.40.247/fireflysailing.org.uk/images/media/',
+                    'http://fireflysailing.org.uk/images/media/',
                     `image3`.`directory`,
                     '/',
                     `image3`.`filename`

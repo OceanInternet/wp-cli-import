@@ -161,7 +161,7 @@
             $sql = "
                 SELECT
                     CONCAT(
-                        'http://79.170.40.247/fireflysailing.org.uk/images/media/Photo/register/',
+                        'http://fireflysailing.org.uk/images/media/Photo/register/',
                         `boats`.`picture`) AS 'file',
                     TRIM(CONCAT(
                         'F', `boats`.`sail_no`, ' ',
