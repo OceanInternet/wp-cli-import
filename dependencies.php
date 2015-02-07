@@ -5,6 +5,7 @@
     use \Ois\FireflyImport\FireflyVenues;
     use \Ois\FireflyImport\FireflyFixtures;
     use \Ois\FireflyImport\FireflyClubs;
+    use \Ois\FireflyImport\FireflyBoats;
 
     $dependencies['wp-cli'] = 'vendor/wp-cli/wp-cli/bin/wp';
 
@@ -48,4 +49,13 @@
             $c['FireflyNews'],
             $c['FireflyBoats'],
             $c['wp-cli']);
+    };
+
+    $dependencies['FireflyBoats'] = function ($c) {
+
+        return new FireflyBoats(
+            $c['connection'],
+//            $c['FireflyResults'],
+            $c['wp-cli']
+        );
     };
