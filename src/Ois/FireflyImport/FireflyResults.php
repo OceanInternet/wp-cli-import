@@ -4,7 +4,7 @@ namespace Ois\FireflyImport;
 class FireflyResults extends FireflyImport {
 
     protected $name       = 'Firefly Results';
-    protected $type       = 'results';
+    protected $type       = 'result';
     protected $table      = 'results';
     protected $slug       = 'result';
     protected $titleField = 'event_title';
