@@ -41,7 +41,7 @@ SELECT
     `editorial`.`pic_1` AS 'pic_1',
     `editorial`.`pic_2` AS 'pic_2',
     `editorial`.`pic_3` AS 'pic_3',
-    `editorial`.`include`
+    `editorial`.`include`,
     CONCAT('editorial_', `editorial`.`editorial_id`) AS 'post_name',
     `editorial`.`title`                              AS 'post_title',
     `editorial`.`text`                               AS 'post_content',
