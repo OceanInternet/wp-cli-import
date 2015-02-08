@@ -35,32 +35,29 @@ class FireflyNews extends FireflyImport {
     protected function fetchPost($oldPostId) {
 
         $sql = "
-SELECT
-    `news`.`pic_1` AS 'pic_1',
-    `news`.`pic_2` AS 'pic_2',
-    `news`.`pic_3` AS 'pic_3',
-    CONCAT('article_', `news`.`article_id`)     AS 'post_name',
-    `news`.`subject`                            AS 'post_title',
-    `news`.`article`                            AS 'post_content',
-    `news`.`intro`                              AS 'post_excerpt',
-    CONCAT(`news`.`date`,' ',`news`.`time`)     AS 'post_date',
-    'publish'                                   AS 'post_status',
-    'post'                                      AS 'post_type',
-    'closed'                                    AS 'comment_status',
-    `news`.`author`                             AS 'author',
-    `news`.`type`                               AS 'category'
-FROM
-  `news`
-WHERE
-  `news`.`article_id` =  ?
-ORDER BY
-  `news`.`article_id` ASC;
-";
+            SELECT
+                `news`.`pic_1` AS 'pic_1',
+                `news`.`pic_2` AS 'pic_2',
+                `news`.`pic_3` AS 'pic_3',
+                CONCAT('article_', `news`.`article_id`)     AS 'post_name',
+                `news`.`subject`                            AS 'post_title',
+                `news`.`article`                            AS 'post_content',
+                `news`.`intro`                              AS 'post_excerpt',
+                CONCAT(`news`.`date`,' ',`news`.`time`)     AS 'post_date',
+                'publish'                                   AS 'post_status',
+                'post'                                      AS 'post_type',
+                'closed'                                    AS 'comment_status',
+                `news`.`author`                             AS 'author',
+                `news`.`type`                               AS 'category'
+            FROM
+              `news`
+            WHERE
+              `news`.`article_id` =  ?
+              ";
 
         $article = $this->connection->fetchAssoc($sql, array($oldPostId));
 
         $article['post_author']   = $this->getAuthorId($article['author']);
-        //$article['post_category'] = $this->getCategoryId($article['category']);
 
         return $article;
     }
