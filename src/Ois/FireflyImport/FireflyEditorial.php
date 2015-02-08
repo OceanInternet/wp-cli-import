@@ -57,5 +57,7 @@ WHERE
         $post = $this->connection->fetchAssoc($sql, array($oldPostId));
 
         $post['post_status'] = ($post['include'] == 'Y') ? 'publish' : 'draft';
+
+        return $post;
     }
 }
