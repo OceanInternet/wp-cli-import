@@ -9,6 +9,8 @@ class FireflyEditorial extends FireflyImport {
     protected $slug       = 'editorial';
     protected $titleField = 'title';
 
+    protected $postConditions = array();
+
     /**
      * @param  string $oldPostId
      * @return array  $oldPost
@@ -39,11 +41,11 @@ SELECT
     `editorial`.`pic_1` AS 'pic_1',
     `editorial`.`pic_2` AS 'pic_2',
     `editorial`.`pic_3` AS 'pic_3',
+    `editorial`.`include`
     CONCAT('editorial_', `editorial`.`editorial_id`) AS 'post_name',
     `editorial`.`title`                              AS 'post_title',
     `editorial`.`text`                               AS 'post_content',
     `editorial`.`date`                               AS 'post_date',
-    'publish'                                        AS 'post_status',
     '{$this->type}'                                  AS 'post_type',
     'closed'                                         AS 'comment_status'
 FROM
@@ -52,6 +54,8 @@ WHERE
   `editorial`.`editorial_id` = ?;
               ";
 
-        return $this->connection->fetchAssoc($sql, array($oldPostId));
+        $post = $this->connection->fetchAssoc($sql, array($oldPostId));
+
+        $post['post_status'] = ($post['include'] == 'Y') ? 'publish' : 'draft';
     }
 }
