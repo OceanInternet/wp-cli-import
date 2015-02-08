@@ -60,7 +60,7 @@ ORDER BY
         $article = $this->connection->fetchAssoc($sql, array($oldPostId));
 
         $article['post_author']   = $this->getAuthorId($article['author']);
-        $article['post_category'] = $this->getCategoryId($article['category']);
+        //$article['post_category'] = $this->getCategoryId($article['category']);
 
         return $article;
     }
@@ -99,15 +99,22 @@ ORDER BY
 
     protected function extractPostMeta($oldPostId)
     {
-        $sql = "SELECT `news`.`club_id` FROM `news` WHERE `news`.`article_id` = ?;";
+        $sql = "
+            SELECT
+                `news`.`club_id`,
+                `news`.`type` AS 'post_tag'
+            FROM
+                `news`
+            WHERE
+                `news`.`article_id` = ?
+                ";
 
-        $oldCLubId = $this->connection->fetchColumn($sql, array($oldPostId));
+        $news = $this->connection->fetchAssoc($sql, array($oldPostId));
 
-        $newClubId = (!empty($this->clubIds[$oldCLubId])) ? $this->clubIds[$oldCLubId] : NULL;
+        $news['_wpcf_belongs_sailing-club_id'] = (!empty($this->clubIds[$news['club_id']])) ? $this->clubIds[$news['club_id']] : NULL;
+        unset($news['club_id']);
 
-        return array(
-            '_wpcf_belongs_sailing-club_id' => $newClubId
-        );
+        return $news;
     }
 
     public function setClubIds(Array $clubIds) {
