@@ -40,7 +40,7 @@
 
             parent::import();
 
-            $this->FireflyResults->seVenueIds($this->venueIds);
+            $this->FireflyResults->setVenueIds($this->venueIds);
             $this->FireflyResults->setClubIds($this->clubIds);
             $this->FireflyResults->setBoatIds($this->postIdMap);
             $this->FireflyResults->import();
