@@ -84,6 +84,8 @@ class FireflyResults extends FireflyImport {
 
         $result = $this->connection->fetchAssoc($sql, array($oldPostId));
 
+        print_r($result);
+
         $result['_wpcf_belongs_sailing-club_id'] = (!empty($this->clubIds["club_{$result['club_id']}"]['ID'])) ? $this->clubIds["club_{$result['club_id']}"]['ID'] : NULL;
         unset($result['club_id']);
 
