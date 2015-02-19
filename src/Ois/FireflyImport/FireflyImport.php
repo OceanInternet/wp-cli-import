@@ -45,7 +45,7 @@ abstract class FireflyImport extends WpCliImport
 
                 $oldPostId = $post['id'];
 
-                echo "\n - Importing {$this->type}: {$post['title']}\n";
+                echo "\n - Importing {$this->type} ({$post['id']}): {$post['title']}\n";
 
                 $this->postIdMap[$oldPostId] = $this->createPost($oldPostId);
             }
