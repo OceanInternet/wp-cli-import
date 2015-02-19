@@ -156,8 +156,6 @@ class FireflyResults extends FireflyImport {
         }, $clubIds);
 
         $this->clubIds = $this->indexById($clubIds, 'post_name');
-
-        print_r($this->clubIds);
     }
 
     /**
