@@ -89,7 +89,7 @@ class FireflyResults extends FireflyImport {
         $result['_wpcf_belongs_sailing-club_id'] = (!empty($this->clubIds["club_{$result['club_id']}"]['ID'])) ? $this->clubIds["club_{$result['club_id']}"]['ID'] : NULL;
         unset($result['club_id']);
 
-        $result['_wpcf_belongs_boat_id'] = (!empty($this->boatIds[$result['sail_no_']]['ID'])) ? $this->boatIds[$result['sail_no']]['ID'] : NULL;
+        $result['_wpcf_belongs_boat_id'] = (!empty($this->boatIds[$result['sail_no_']]['ID'])) ? $this->boatIds[$result['sail_no_']]['ID'] : NULL;
         unset($result['sail_no']);
 
         $result['_wpcf_belongs_tribe_venue_id'] = (!empty($this->clubIds["club_{$result['venue_id']}"])) ? $this->clubIds["club_{$result['club_id']}"]['_wpcf_belongs_tribe_venue_id'] : NULL;
