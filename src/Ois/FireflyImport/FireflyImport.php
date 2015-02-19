@@ -230,4 +230,14 @@ abstract class FireflyImport extends WpCliImport
         return $this->connection->fetchAssoc($sql, array($oldPostId));
     }
 
+    protected function indexById(Array $array, $field="ID") {
+
+        $keys = array_map(function (Array $value) use ($field) {
+
+            return (!empty($value[$field])) ? $value[$field] : NULL;
+
+        }, $array);
+
+        return array_combine($keys, $array);
+    }
 }

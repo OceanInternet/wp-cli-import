@@ -13,21 +13,13 @@ class FireflyResults extends FireflyImport {
 
     protected $boatIds  = array();
     protected $clubIds  = array();
-    protected $venueIds = array();
 
-    public function setClubIds(Array $clubIds) {
+    protected function fetchPostIds($table, $slug, $titleField='title') {
 
-        $this->clubIds = $clubIds;
-    }
+        $this->setBoatIds();
+        $this->setClubIds();
 
-    public function setBoatIds(Array $boatIds) {
-
-        $this->boatIds = $boatIds;
-    }
-
-    public function setVenueIds(Array $venueIds) {
-
-        $this->venueIds = $venueIds;
+        return parent::fetchPostIds($table, $slug, $titleField);
     }
 
     /**
@@ -72,7 +64,7 @@ class FireflyResults extends FireflyImport {
     {
         $sql = "
                 SELECT
-                    `results`.`year` AS 'wpcf-result-year',
+                    `results`.`year`  AS 'wpcf-result-year',
                     `results`.`venue` AS 'wpcf-result-venue',
                     TRIM(CONCAT(
                         'F', `results`.`sail_no`, ' ',
@@ -92,13 +84,13 @@ class FireflyResults extends FireflyImport {
 
         $result = $this->connection->fetchAssoc($sql, array($oldPostId));
 
-        $result['_wpcf_belongs_sailing-club_id'] = (!empty($this->clubIds[$result['club_id']])) ? $result['club_id'] : NULL;
+        $result['_wpcf_belongs_sailing-club_id'] = (!empty($this->clubIds["club_{$result['club_id']}"]['ID'])) ? $this->clubIds["club_{$result['club_id']}"]['ID'] : NULL;
         unset($result['club_id']);
 
         $result['_wpcf_belongs_boat_id'] = (!empty($this->boatIds[$result['sail_no']])) ? $result['sail_no'] : NULL;
         unset($result['sail_no']);
 
-        $result['_wpcf_belongs_tribe_venue_id'] = (!empty($this->venueIds[$result['venue_id']])) ? $result['venue_id'] : NULL;
+        $result['_wpcf_belongs_tribe_venue_id'] = (!empty($this->clubIds["club_{$result['venue_id']}"])) ? $this->clubIds["club_{$result['club_id']}"]['_wpcf_belongs_tribe_venue_id'] : NULL;
         unset($result['venue_id']);
 
         return $result;
@@ -116,6 +108,42 @@ class FireflyResults extends FireflyImport {
             ";
 
         return array_map(array($this, 'slug'), $this->connection->fetchAssoc($sql, array($oldPostId)));
+    }
+
+    protected function setBoatIds() {
+
+        $json = $this->wpCli(
+            array('post', 'list'),
+            array(
+                'fields'    => 'ID,post_name',
+                'post_type' => 'boat',
+                'format'    => 'json'
+            )
+        );
+
+        $this->venueIds = $this->indexById(json_decode($json), 'post_name');
+    }
+
+    protected function setClubIds() {
+
+        $json = $this->wpCli(
+            array('post', 'list'),
+            array(
+                'fields'    => 'ID,post_name',
+                'post_type' => 'sailing-club',
+                'format'    => 'json'
+            )
+        );
+
+        $clubIds = array_map(function ($value) {
+
+            $value['_wpcf_belongs_tribe_venue_id'] = $this->wpCli(array('post','meta', 'get', $value['ID'], ' _wpcf_belongs_tribe_venue_id');
+
+            return $value;
+
+        }, json_decode($json));
+
+        $this->clubIds = $this->indexById($clubIds, 'post_name');
     }
 
     /**
