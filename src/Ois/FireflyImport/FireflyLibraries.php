@@ -35,6 +35,7 @@ class FireflyLibraries extends FireflyImport {
         $sql = "
             SELECT
                 CONCAT('library', `library`.`library_id`) AS 'post_name',
+                CONCAT(`library`.`year`, '-01-01')        AS 'post_date',
                 `library`.`title`                         AS 'post_title',
                 `library`.`description`                   AS 'post_content',
                 'publish'                                 AS 'post_status',
@@ -46,10 +47,10 @@ class FireflyLibraries extends FireflyImport {
               `library`.`library_id` =  ?
               ";
 
-        $article = $this->connection->fetchAssoc($sql, array($oldPostId));
-        $article['post_category'] = $this->getCategoryId();
+        $library = $this->connection->fetchAssoc($sql, array($oldPostId));
+        $library['post_category'] = $this->getCategoryId();
 
-        return $article;
+        return $library;
     }
 
     protected function getCategoryId() {
