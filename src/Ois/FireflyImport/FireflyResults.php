@@ -123,9 +123,7 @@ class FireflyResults extends FireflyImport {
             )
         );
 
-        $boatIds = json_decode($json);
-
-        print_r($boatIds);
+        $boatIds = json_decode($json, TRUE);
 
         $this->boatIds = $this->indexById($boatIds, 'post_name');
     }
@@ -143,7 +141,7 @@ class FireflyResults extends FireflyImport {
             )
         );
 
-        $clubIds = json_decode($json);
+        $clubIds = json_decode($json, TRUE);
 
         $clubIds = array_map(function ($value) {
 
