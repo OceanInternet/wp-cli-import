@@ -35,12 +35,12 @@ class FireflyResults extends FireflyImport {
 
         $sql = "
             SELECT
-                CONCAT('result_id_', `results`.`result_id`) AS 'post_name',
+                CONCAT('result_id_', `results`.`result_id`)            AS 'post_name',
                 CONCAT(`results`.`event_title`, ' ', `results`.`year`) AS 'post_title',
-                `results`.`year`                                       AS 'year',
-                'publish'                                             AS 'post_status',
-                '{$this->type}'                                       AS 'post_type',
-                'closed'                                              AS 'comment_status'
+                CONCAT(`results`.`year`, '-01-01')                     AS 'post_date',
+                'publish'                                              AS 'post_status',
+                '{$this->type}'                                        AS 'post_type',
+                'closed'                                               AS 'comment_status'
             FROM
               `results`
             WHERE
@@ -49,7 +49,7 @@ class FireflyResults extends FireflyImport {
 
         $result = $this->connection->fetchAssoc($sql, array($oldPostId));
 
-        $result['post_date'] = $result['year'] . '01-01';
+        $result['post_date'] = $result['year'] . '-01-01';
         unset($result['year']);
 
         return $result;
