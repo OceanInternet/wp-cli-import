@@ -49,9 +49,6 @@ class FireflyResults extends FireflyImport {
 
         $result = $this->connection->fetchAssoc($sql, array($oldPostId));
 
-        $result['post_date'] = $result['year'] . '-01-01';
-        unset($result['year']);
-
         return $result;
     }
 
