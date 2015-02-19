@@ -141,7 +141,7 @@ class FireflyResults extends FireflyImport {
 
         $clubIds = array_map(function ($value) {
 
-            $value['_wpcf_belongs_tribe_venue_id'] = $this->wpCli(array('post','meta', 'get', $value['ID'], ' _wpcf_belongs_tribe_venue_id');
+            $value['_wpcf_belongs_tribe_venue_id'] = $this->wpCli(array('post','meta', 'get', $value['ID'], ' _wpcf_belongs_tribe_venue_id'));
 
             return $value;
 
