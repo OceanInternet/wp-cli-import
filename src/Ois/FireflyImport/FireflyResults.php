@@ -93,6 +93,8 @@ class FireflyResults extends FireflyImport {
         $result['_wpcf_belongs_tribe_venue_id'] = (!empty($this->clubIds["club_{$result['venue_id']}"])) ? $this->clubIds["club_{$result['club_id']}"]['_wpcf_belongs_tribe_venue_id'] : NULL;
         unset($result['venue_id']);
 
+        print_r($result);
+
         return $result;
     }
 
