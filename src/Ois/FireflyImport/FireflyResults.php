@@ -123,7 +123,9 @@ class FireflyResults extends FireflyImport {
             )
         );
 
-        $this->venueIds = $this->indexById(json_decode($json), 'post_name');
+        $this->boatIds = $this->indexById(json_decode($json), 'post_name');
+
+        print_r($this->boatIds);
     }
 
     protected function setClubIds() {
@@ -139,13 +141,15 @@ class FireflyResults extends FireflyImport {
             )
         );
 
+        $clubIds = json_decode($json);
+
         $clubIds = array_map(function ($value) {
 
             $value['_wpcf_belongs_tribe_venue_id'] = $this->wpCli(array('post','meta', 'get', $value['ID'], ' _wpcf_belongs_tribe_venue_id'));
 
             return $value;
 
-        }, json_decode($json));
+        }, $clubIds);
 
         $this->clubIds = $this->indexById($clubIds, 'post_name');
     }
