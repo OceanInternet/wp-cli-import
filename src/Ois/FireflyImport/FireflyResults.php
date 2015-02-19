@@ -66,10 +66,10 @@ class FireflyResults extends FireflyImport {
                     TRIM(CONCAT(
                         'F', `results`.`sail_no`, ' ',
                         `results`.`boat_name`)) AS 'wpcf-result-boat-name',
-                    `results`.`helm` AS 'wpcf-result-helm',
-                    `results`.`crew` AS 'wpcf-result-crew',
-                    `results`.`club` AS 'wpcf-result-club',
-                    `results`.`no_entries` AS 'wpcf-result-entries',
+                    `results`.`helm`            AS 'wpcf-result-helm',
+                    `results`.`crew`            AS 'wpcf-result-crew',
+                    `results`.`club`            AS 'wpcf-result-club',
+                    `results`.`no_entries`      AS 'wpcf-result-entries',
                     `results`.`club_id`,
                     `results`.`sail_no`,
                     `results`.`venue_id`
@@ -81,14 +81,14 @@ class FireflyResults extends FireflyImport {
 
         $result = $this->connection->fetchAssoc($sql, array($oldPostId));
 
-        $result['_wpcf_belongs_sailing-club_id'] = (!empty($this->clubIds["club_{$result['club_id']}"]['ID'])) ? $this->clubIds["club_{$result['club_id']}"]['ID'] : NULL;
+        $result['_wpcf_belongs_sailing-club_id'] = (!empty($this->clubIds["club_{$result['club_id']}"]))  ? $this->clubIds["club_{$result['club_id']}"]['ID'] : NULL;
         unset($result['club_id']);
+
+        $result['_wpcf_belongs_tribe_venue_id']  = (!empty($this->clubIds["club_{$result['venue_id']}"])) ? $this->clubIds["club_{$result['club_id']}"]['_wpcf_belongs_tribe_venue_id'] : NULL;
+        unset($result['venue_id']);
 
         $result['_wpcf_belongs_boat_id'] = (!empty($this->boatIds["sail_no_{$result['sail_no']}"]['ID'])) ? $this->boatIds["sail_no_{$result['sail_no']}"]['ID'] : NULL;
         unset($result['sail_no']);
-
-        $result['_wpcf_belongs_tribe_venue_id'] = (!empty($this->clubIds["club_{$result['venue_id']}"])) ? $this->clubIds["club_{$result['club_id']}"]['_wpcf_belongs_tribe_venue_id'] : NULL;
-        unset($result['venue_id']);
 
         return $result;
     }
